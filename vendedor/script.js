@@ -57,54 +57,76 @@ async function cargarCatalogo() {
   }
 }
 
-// Dibuja las tarjetas en el medio
+// Dibuja las tarjetas en el medio (Agrupadas por Modelo)
 function renderizarCatalogo(listaItems) {
   contenedorCatalogo.innerHTML = "";
+  
+  // Agrupar por Marca + Modelo
+  const agrupado = {};
   listaItems.forEach(item => {
-    // Si ya está en el carrito, mostramos su cantidad actual
-    const cantActual = carrito[item.id] ? carrito[item.id].cantidad : 0;
+    if (!agrupado[item.titulo]) {
+      agrupado[item.titulo] = [];
+    }
+    agrupado[item.titulo].push(item);
+  });
+
+  Object.keys(agrupado).forEach(titulo => {
+    const itemsDelModelo = agrupado[titulo];
     
     const card = document.createElement("div");
-    card.className = "item-card";
-    card.dataset.id = item.id;
+    card.className = "item-card-agrupada";
     
-    // Convertimos precio en formato legible
-    let precioVisible = item.precioNum.toLocaleString("es-AR") + "$";
-
-    card.innerHTML = `
-      <div class="item-info">
-        <h3>${item.titulo}</h3>
-        <p class="reparacion">${item.reparacion}</p>
-        <p class="precio">${precioVisible}</p>
-      </div>
-      <div class="item-controles">
-        <button class="btn-resta ${cantActual > 0 ? 'activo-resta' : ''}">-</button>
-        <span class="cantidad">${cantActual}</span>
-        <button class="btn-suma activo-suma">+</button>
-      </div>
-    `;
-
-    // Eventos de suma y resta
-    const btnSuma = card.querySelector('.btn-suma');
-    const btnResta = card.querySelector('.btn-resta');
+    const header = document.createElement("div");
+    header.className = "card-header-agrupado";
+    header.innerHTML = `<h3>${titulo}</h3>`;
+    card.appendChild(header);
     
-    btnSuma.addEventListener('click', () => {
-      agregarAlCarrito(item);
-      card.querySelector('.cantidad').textContent = carrito[item.id].cantidad;
-      btnResta.classList.add('activo-resta');
-      actualizarFooter();
-    });
+    const bodyAgrupado = document.createElement("div");
+    bodyAgrupado.className = "card-body-agrupado";
 
-    btnResta.addEventListener('click', () => {
-      restarDelCarrito(item.id);
-      const nuevaCant = carrito[item.id] ? carrito[item.id].cantidad : 0;
-      card.querySelector('.cantidad').textContent = nuevaCant;
-      if (nuevaCant === 0) {
-        btnResta.classList.remove('activo-resta');
-      }
-      actualizarFooter();
-    });
+    itemsDelModelo.forEach(item => {
+      const cantActual = carrito[item.id] ? carrito[item.id].cantidad : 0;
+      let precioVisible = item.precioNum.toLocaleString("es-AR") + "$";
 
+      const fila = document.createElement("div");
+      fila.className = "reparacion-fila";
+      fila.innerHTML = `
+        <div class="fila-info">
+          <p class="reparacion-nombre">${item.reparacion}</p>
+          <p class="reparacion-precio">${precioVisible}</p>
+        </div>
+        <div class="item-controles">
+          <button class="btn-resta ${cantActual > 0 ? 'activo-resta' : ''}">-</button>
+          <span class="cantidad">${cantActual}</span>
+          <button class="btn-suma activo-suma">+</button>
+        </div>
+      `;
+
+      // Eventos de suma y resta
+      const btnSuma = fila.querySelector('.btn-suma');
+      const btnResta = fila.querySelector('.btn-resta');
+      
+      btnSuma.addEventListener('click', () => {
+        agregarAlCarrito(item);
+        fila.querySelector('.cantidad').textContent = carrito[item.id].cantidad;
+        btnResta.classList.add('activo-resta');
+        actualizarFooter();
+      });
+
+      btnResta.addEventListener('click', () => {
+        restarDelCarrito(item.id);
+        const nuevaCant = carrito[item.id] ? carrito[item.id].cantidad : 0;
+        fila.querySelector('.cantidad').textContent = nuevaCant;
+        if (nuevaCant === 0) {
+          btnResta.classList.remove('activo-resta');
+        }
+        actualizarFooter();
+      });
+      
+      bodyAgrupado.appendChild(fila);
+    });
+    
+    card.appendChild(bodyAgrupado);
     contenedorCatalogo.appendChild(card);
   });
 }

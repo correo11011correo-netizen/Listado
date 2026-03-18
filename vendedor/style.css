@@ -85,31 +85,66 @@ body {
 .grid-catalogo {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 15px;
+  gap: 20px;
 }
 
-.item-card {
+.item-card-agrupada {
   background: #1e1e1e;
   border: 1px solid #333;
   border-radius: 12px;
-  padding: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
   display: flex;
   flex-direction: column;
-  gap: 10px;
 }
 
-.item-info h3 {
-  margin: 0 0 5px 0;
-  font-size: 1.3rem;
-  color: #fff;
+.card-header-agrupado {
+  background: linear-gradient(135deg, #0078d7, #005a9e);
+  padding: 15px 20px;
+  border-bottom: 2px solid #000;
 }
-.item-info .reparacion {
+
+.card-header-agrupado h3 {
   margin: 0;
-  font-size: 1.1rem;
-  color: #aaa;
+  font-size: 1.5rem;
+  color: #fff;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
 }
-.item-info .precio {
-  margin: 5px 0 0 0;
+
+.card-body-agrupado {
+  display: flex;
+  flex-direction: column;
+  padding: 5px 15px;
+}
+
+.reparacion-fila {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid #333;
+}
+
+.reparacion-fila:last-child {
+  border-bottom: none;
+}
+
+.fila-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+  padding-right: 15px;
+}
+
+.reparacion-nombre {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #e0e0e0;
+}
+
+.reparacion-precio {
+  margin: 0;
   font-size: 1.4rem;
   color: #28a745;
   font-weight: bold;
@@ -120,7 +155,6 @@ body {
   align-items: center;
   justify-content: flex-end;
   gap: 15px;
-  margin-top: 5px;
 }
 .item-controles button {
   width: 45px;
@@ -129,7 +163,7 @@ body {
   background: #333;
   color: #fff;
   border: none;
-  border-radius: 50%;
+  border-radius: 8px; /* Cuadrados redondeados */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -142,7 +176,7 @@ body {
   background: #0078d7;
 }
 .item-controles .cantidad {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   font-weight: bold;
   width: 30px;
   text-align: center;
