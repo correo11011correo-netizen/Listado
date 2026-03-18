@@ -18,8 +18,8 @@
   </div>
   <div class="g_id_signin" data-type="standard"></div>
 
-  <!-- Formulario (solo visible con sesión) -->
-  <form id="formulario" style="display:none;">
+  <!-- Formulario (oculto hasta iniciar sesión) -->
+  <form id="formulario">
     <label>Marca:</label>
     <select id="marca"></select>
     <input type="text" id="nuevaMarca" placeholder="Nueva marca (opcional)">
@@ -42,6 +42,7 @@
   <input type="text" id="buscador" placeholder="Buscar por marca, modelo o reparación...">
 
   <h2>Listado de precios</h2>
+  <!-- Contenedor de tarjetas -->
   <div id="tarjetas"></div>
 </body>
 </html>
