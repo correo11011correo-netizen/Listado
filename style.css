@@ -145,18 +145,43 @@ button:hover {
 
   #tarjetas {
     grid-template-columns: 1fr;
+    gap: 12px;
   }
   .card {
-    padding: 20px;
-    font-size: 16px;
+    padding: 16px;
+    font-size: 15px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .card h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    border-bottom: 1px solid #333;
+    padding-bottom: 8px;
+    margin-bottom: 4px;
+  }
+  .card p {
+    margin: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .card p strong {
+    color: #bbb;
   }
   .acciones {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 10px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #333;
   }
   .acciones button {
-    width: 100%;
-    font-size: 16px;
+    width: 50%;
+    font-size: 15px;
+    padding: 10px;
   }
 }
