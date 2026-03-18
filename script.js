@@ -28,6 +28,8 @@ async function cargarListado() {
     const json = await res.json();
     const contenedor = document.querySelector("#tarjetas");
     contenedor.innerHTML = "";
+    const btnViejo = document.getElementById("btn-ver-mas");
+    if (btnViejo) btnViejo.remove();
 
     if (json.contenido) {
       const lineas = json.contenido.trim().split("\n");
@@ -49,7 +51,9 @@ async function cargarListado() {
           const card = document.createElement("div");
           card.className = "card fade-in";
           card.innerHTML = `
-            <h3>${marca} ${modelo}</h3>
+            <div class="card-header">
+              <h3>${marca} ${modelo}</h3>
+            </div>
             <p><strong>Reparación:</strong> ${reparacion}</p>
             <p><strong>Precio:</strong> ${precio}</p>
             <p><strong>Fecha:</strong> ${fecha}</p>
@@ -58,12 +62,12 @@ async function cargarListado() {
           // Solo mostrar acciones si hay sesión iniciada
           if (idToken) {
             const acciones = document.createElement("div");
-            acciones.className = "acciones";
+            acciones.className = "acciones-inline";
             acciones.innerHTML = `
-              <button class="editar">Editar</button>
-              <button class="eliminar">Eliminar</button>
+              <button class="editar">✏️</button>
+              <button class="eliminar">🗑️</button>
             `;
-            card.appendChild(acciones);
+            card.querySelector(".card-header").appendChild(acciones);
 
             acciones.querySelector(".editar").addEventListener("click", () => {
               document.getElementById("nuevaMarca").value = marca;
@@ -87,9 +91,34 @@ async function cargarListado() {
             });
           }
 
-          contenedor.appendChild(card);
+          contenedor.prepend(card); // Insertar al principio (las más nuevas arriba)
         }
       });
+
+      // Limitar a 5 tarjetas por defecto
+      const allCards = Array.from(contenedor.children);
+      allCards.forEach((c, i) => {
+        if (i >= 5) {
+          c.classList.add('oculta-limite');
+          c.style.display = 'none';
+        }
+      });
+
+      // Si hay más de 5, agregar botón "Ver todas"
+      if (allCards.length > 5) {
+        const btnVerMas = document.createElement("button");
+        btnVerMas.id = "btn-ver-mas";
+        btnVerMas.textContent = "Ver todo el listado (" + allCards.length + ")";
+        btnVerMas.style.marginTop = "15px";
+        btnVerMas.addEventListener("click", () => {
+          allCards.forEach(c => {
+            c.classList.remove('oculta-limite');
+            c.style.display = 'flex'; // o block según css
+          });
+          btnVerMas.style.display = "none";
+        });
+        contenedor.parentElement.appendChild(btnVerMas);
+      }
 
       // actualizar selects
       const marcaSelect = document.getElementById("marca");
@@ -170,10 +199,26 @@ function ocultarLoader() {
 // Buscador dinámico
 document.getElementById("buscador").addEventListener("input", () => {
   const filtro = document.getElementById("buscador").value.toLowerCase();
-  document.querySelectorAll("#tarjetas .card").forEach(card => {
-    const texto = card.innerText.toLowerCase();
-    card.style.display = texto.includes(filtro) ? "block" : "none";
-  });
+  const btnVerMas = document.getElementById("btn-ver-mas");
+  
+  if (filtro === "") {
+    // Si se borra la búsqueda, volver al estado original
+    document.querySelectorAll("#tarjetas .card").forEach((card, i) => {
+      if (card.classList.contains('oculta-limite')) {
+        card.style.display = 'none';
+      } else {
+        card.style.display = 'flex'; // o el que corresponda
+      }
+    });
+    if (btnVerMas) btnVerMas.style.display = 'block';
+  } else {
+    // Si está buscando, ignorar límite
+    document.querySelectorAll("#tarjetas .card").forEach(card => {
+      const texto = card.innerText.toLowerCase();
+      card.style.display = texto.includes(filtro) ? "flex" : "none";
+    });
+    if (btnVerMas) btnVerMas.style.display = 'none';
+  }
 });
 
 // Detectar sesión guardada

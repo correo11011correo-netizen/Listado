@@ -95,42 +95,56 @@ button:hover {
   opacity: 0;
   animation: fadeIn 0.6s forwards;
 }
-.card h3 {
-  margin: 0;
-  font-size: 1.2rem;
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   border-bottom: 1px solid #333;
   padding-bottom: 8px;
   margin-bottom: 4px;
+}
+.card-header h3 {
+  margin: 0;
+  font-size: 1.3rem;
   color: #fff;
 }
+.acciones-inline {
+  display: flex;
+  gap: 8px;
+}
+.acciones-inline button {
+  width: auto;
+  font-size: 16px;
+  padding: 6px 12px;
+  margin: 0;
+  background: #2a2a2a;
+  border: 1px solid #555;
+}
+.acciones-inline button:hover {
+  background: #333;
+}
+
 .card p {
   margin: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  font-size: 1.1rem;
 }
 .card p strong {
   color: #bbb;
 }
-.acciones {
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid #333;
+
+#btn-ver-mas {
+  background: #1e1e1e;
+  color: #fff;
+  border: 1px solid #444;
+  border-radius: 8px;
+  font-size: 16px;
+  padding: 12px;
 }
-.acciones button {
-  width: 50%;
-  font-size: 15px;
-  padding: 10px;
-  margin-top: 0;
-}
-.acciones button.eliminar {
-  background: #d9534f;
-}
-.acciones button.editar {
-  background: #f0ad4e;
+#btn-ver-mas:hover {
+  background: #2a2a2a;
 }
 
 /* Loader circular sin texto */
@@ -201,10 +215,13 @@ body.pc-view .card {
   border-radius: 8px;
   display: block;
 }
-body.pc-view .card h3 {
-  font-size: 1.17em;
+body.pc-view .card-header {
   border-bottom: none;
   padding-bottom: 0;
+  margin-bottom: 8px;
+}
+body.pc-view .card-header h3 {
+  font-size: 1.25rem;
 }
 body.pc-view .card p {
   display: block;
@@ -212,15 +229,4 @@ body.pc-view .card p {
 }
 body.pc-view .card p strong {
   color: #e0e0e0;
-}
-body.pc-view .acciones {
-  display: block;
-  margin-top: 10px;
-  padding-top: 0;
-  border-top: none;
-}
-body.pc-view .acciones button {
-  display: inline-block;
-  width: auto;
-  margin-right: 5px;
 }
