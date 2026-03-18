@@ -8,6 +8,12 @@ const loader = document.getElementById('loader');
 
 // Al cargar, obtener la lista
 document.addEventListener("DOMContentLoaded", () => {
+  // Cargar desde caché para respuesta instantánea
+  const cache = localStorage.getItem('catalogo_cache');
+  if (cache) {
+    catalogo = JSON.parse(cache);
+    renderizarCatalogo(catalogo);
+  }
   cargarCatalogo();
 });
 
@@ -17,14 +23,14 @@ function parsePrecioStr(str) {
 }
 
 async function cargarCatalogo() {
-  loader.style.display = "block";
-  contenedorCatalogo.innerHTML = "";
+  if (catalogo.length === 0) loader.style.display = "block";
   try {
     const res = await fetch(CONFIG.SCRIPT_URL);
     const json = await res.json();
     
     if (json.contenido) {
       const lineas = json.contenido.trim().split("\n");
+      const nuevoCatalogo = [];
       
       lineas.forEach((linea, idx) => {
         const partes = linea.split(" | ");
@@ -35,8 +41,7 @@ async function cargarCatalogo() {
           const precioOriginal = partes[5];
           const precioNum = parsePrecioStr(precioOriginal);
 
-          // Crear objeto único por reparación
-          const item = {
+          nuevoCatalogo.push({
             id: `item-${idx}`,
             marca: marca,
             modelo: modelo,
@@ -44,14 +49,19 @@ async function cargarCatalogo() {
             titulo: `${marca} ${modelo}`,
             precioStr: precioOriginal,
             precioNum: precioNum
-          };
-          catalogo.push(item);
+          });
         }
       });
-      renderizarCatalogo(catalogo);
+      
+      // Actualizar solo si hay cambios
+      if (JSON.stringify(catalogo) !== JSON.stringify(nuevoCatalogo)) {
+        catalogo = nuevoCatalogo;
+        localStorage.setItem('catalogo_cache', JSON.stringify(catalogo));
+        renderizarCatalogo(catalogo);
+      }
     }
   } catch (err) {
-    alert("Error cargando el catálogo: " + err);
+    console.error(err);
   } finally {
     loader.style.display = "none";
   }
@@ -131,14 +141,18 @@ function renderizarCatalogo(listaItems) {
   });
 }
 
-// Buscador
+// Buscador con Debounce
+let timerBuscador;
 document.getElementById('buscador-reparaciones').addEventListener('input', (e) => {
-  const filtro = e.target.value.toLowerCase();
-  const filtrados = catalogo.filter(item => {
-    const texto = `${item.marca} ${item.modelo} ${item.reparacion}`.toLowerCase();
-    return texto.includes(filtro);
-  });
-  renderizarCatalogo(filtrados);
+  clearTimeout(timerBuscador);
+  timerBuscador = setTimeout(() => {
+    const filtro = e.target.value.toLowerCase();
+    const filtrados = catalogo.filter(item => {
+      const texto = `${item.marca} ${item.modelo} ${item.reparacion}`.toLowerCase();
+      return texto.includes(filtro);
+    });
+    renderizarCatalogo(filtrados);
+  }, 200);
 });
 
 // === LOGICA DE CARRITO Y DESCUENTOS ===
