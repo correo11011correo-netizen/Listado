@@ -3,6 +3,7 @@ let editIndex = null;
 
 function handleCredentialResponse(response) {
   idToken = response.credential;
+  document.getElementById("formulario").style.display = "block"; // mostrar editor
   cargarListado();
 }
 
@@ -43,7 +44,7 @@ async function cargarListado() {
         modelos.add(modelo);
 
         const card = document.createElement("div");
-        card.className = "card";
+        card.className = "card fade-in";
         card.innerHTML = `
           <h3>${marca} ${modelo}</h3>
           <p><strong>Reparación:</strong> ${reparacion}</p>
@@ -125,6 +126,15 @@ document.getElementById("formulario").addEventListener("submit", async (e) => {
   } else {
     alert("Error: " + json.error);
   }
+});
+
+// Buscador dinámico
+document.getElementById("buscador").addEventListener("input", () => {
+  const filtro = document.getElementById("buscador").value.toLowerCase();
+  document.querySelectorAll("#tarjetas .card").forEach(card => {
+    const texto = card.innerText.toLowerCase();
+    card.style.display = texto.includes(filtro) ? "block" : "none";
+  });
 });
 
 document.addEventListener("DOMContentLoaded", cargarListado);
