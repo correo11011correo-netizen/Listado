@@ -1,4 +1,5 @@
 let idToken = null;
+let editIndex = null;
 
 function handleCredentialResponse(response) {
   idToken = response.credential;
@@ -55,7 +56,7 @@ async function cargarListado() {
           document.getElementById("nuevoModelo").value = modelo;
           document.getElementById("reparacion").value = reparacion;
           document.getElementById("precio").value = partes[5];
-          tr.dataset.linea = idx;
+          editIndex = idx;
         });
 
         // Eliminar
@@ -94,7 +95,7 @@ async function cargarListado() {
   }
 }
 
-// Guardar nueva reparación
+// Guardar nueva reparación o editar existente
 document.getElementById("formulario").addEventListener("submit", async (e) => {
   e.preventDefault();
   if (!idToken) return alert("Inicia sesión primero");
@@ -106,7 +107,8 @@ document.getElementById("formulario").addEventListener("submit", async (e) => {
 
   const data = {
     token: idToken,
-    accion: "agregar",
+    accion: editIndex !== null ? "editar" : "agregar",
+    linea: editIndex,
     marca, modelo, reparacion, precio
   };
 
@@ -115,6 +117,13 @@ document.getElementById("formulario").addEventListener("submit", async (e) => {
     body: JSON.stringify(data)
   });
   const json = await res.json();
-  if (json.estado === "ok") cargarListado();
-  else alert("Error al guardar: " + json.error);
+  if (json.estado === "ok") {
+    editIndex = null;
+    cargarListado();
+  } else {
+    alert("Error: " + json.error);
+  }
 });
+
+// Cargar listado al iniciar página
+document.addEventListener("DOMContentLoaded", cargarListado);
