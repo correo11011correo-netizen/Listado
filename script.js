@@ -22,7 +22,7 @@ function formatFecha(fechaIso) {
 }
 
 async function cargarListado() {
-  mostrarLoader("Cargando precios...");
+  mostrarLoader();
   try {
     const res = await fetch(CONFIG.SCRIPT_URL);
     const json = await res.json();
@@ -74,7 +74,7 @@ async function cargarListado() {
             });
 
             acciones.querySelector(".eliminar").addEventListener("click", async () => {
-              mostrarLoader("Eliminando...");
+              mostrarLoader();
               const data = { token: idToken, accion: "eliminar", linea: idx };
               const res = await fetch(CONFIG.SCRIPT_URL, {
                 method: "POST",
@@ -133,7 +133,7 @@ document.getElementById("formulario").addEventListener("submit", async (e) => {
     marca, modelo, reparacion, precio
   };
 
-  mostrarLoader(editIndex !== null ? "Editando..." : "Agregando...");
+  mostrarLoader();
   const res = await fetch(CONFIG.SCRIPT_URL, {
     method: "POST",
     body: JSON.stringify(data)
@@ -150,20 +150,16 @@ document.getElementById("formulario").addEventListener("submit", async (e) => {
   }
 });
 
-// Loader helpers con texto
-function mostrarLoader(texto="Cargando...") {
+// Loader helpers SIN texto
+function mostrarLoader() {
   let loader = document.getElementById("loader");
   if (!loader) {
     loader = document.createElement("div");
     loader.id = "loader";
     loader.className = "loader";
-    const span = document.createElement("span");
-    span.textContent = texto;
-    loader.appendChild(span);
     document.body.appendChild(loader);
   } else {
-    loader.querySelector("span").textContent = texto;
-    loader.style.display = "flex";
+    loader.style.display = "block";
   }
 }
 function ocultarLoader() {
