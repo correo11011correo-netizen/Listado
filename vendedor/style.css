@@ -1,23 +1,38 @@
-/* Estilos Panel Vendedor (Mobile First) */
+/* Estilos Punto de Venta Móvil (POS) */
 body {
   font-family: Arial, sans-serif;
   background: #121212;
   color: #e0e0e0;
-  margin: 10px;
-  font-size: 16px;
+  margin: 0;
+  padding: 0;
+  /* Espacio extra abajo para que el footer sticky no tape contenido */
+  padding-bottom: 120px; 
+  padding-top: 200px; /* Espacio para el header fijo */
 }
 
+/* 1. Header (Datos Cliente y Buscador) */
 .header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: #1e1e1e;
+  border-bottom: 1px solid #333;
+  z-index: 1000;
+  padding: 15px;
+  box-sizing: border-box;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+}
+
+.header-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #333;
-  padding-bottom: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
-h1 {
-  font-size: 1.5rem;
+.header h1 {
+  font-size: 1.4rem;
   margin: 0;
   color: #fff;
 }
@@ -31,144 +46,233 @@ h1 {
   font-size: 14px;
 }
 
-.container {
+.cliente-info {
   display: flex;
-  flex-direction: column;
-  gap: 20px;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+.cliente-info input {
+  flex: 1;
+  background: #2a2a2a;
+  color: #fff;
+  border: 1px solid #444;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 16px;
+  box-sizing: border-box;
 }
 
-.panel-agregar, .panel-resumen {
-  background: #1e1e1e;
+.buscador-container input {
+  width: 100%;
+  background: #2a2a2a;
+  color: #fff;
+  border: 1px solid #0078d7;
+  padding: 14px;
+  border-radius: 8px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+.buscador-container input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 120, 215, 0.5);
+}
+
+/* 2. Catálogo (Centro) */
+.catalogo-container {
   padding: 15px;
-  border-radius: 12px;
+}
+
+.grid-catalogo {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 15px;
+}
+
+.item-card {
+  background: #1e1e1e;
   border: 1px solid #333;
-}
-
-h2 {
-  margin-top: 0;
-  font-size: 1.3rem;
-  color: #0078d7;
-  border-bottom: 1px solid #333;
-  padding-bottom: 8px;
-}
-
-form {
+  border-radius: 12px;
+  padding: 15px;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-label {
-  margin-bottom: 2px;
-  font-size: 14px;
-  color: #bbb;
-}
-
-input {
-  background: #2a2a2a;
+.item-info h3 {
+  margin: 0 0 5px 0;
+  font-size: 1.3rem;
   color: #fff;
-  border: 1px solid #444;
-  padding: 12px;
-  border-radius: 6px;
-  font-size: 16px;
+}
+.item-info .reparacion {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #aaa;
+}
+.item-info .precio {
+  margin: 5px 0 0 0;
+  font-size: 1.4rem;
+  color: #28a745;
+  font-weight: bold;
 }
 
-button {
+.item-controles {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 5px;
+}
+.item-controles button {
+  width: 45px;
+  height: 45px;
+  font-size: 24px;
+  background: #333;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+.item-controles button.activo-resta {
+  background: #d9534f;
+}
+.item-controles button.activo-suma {
+  background: #0078d7;
+}
+.item-controles .cantidad {
+  font-size: 1.5rem;
+  font-weight: bold;
+  width: 30px;
+  text-align: center;
+}
+
+/* 3. Footer (Totales Sticky) */
+.footer-totales {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #000;
+  border-top: 2px solid #333;
+  padding: 15px;
+  box-sizing: border-box;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 -4px 10px rgba(0,0,0,0.8);
+}
+
+.resumen-rapido {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.info-items {
+  font-size: 14px;
+  color: #aaa;
+}
+.descuento-info {
+  font-size: 14px;
+  color: #f0ad4e;
+  font-weight: bold;
+}
+
+.total-precio {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.total-precio span:first-child {
+  font-size: 12px;
+  color: #aaa;
+  text-transform: uppercase;
+}
+.total-precio span:last-child {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #28a745;
+}
+
+.btn-generar {
   background: #0078d7;
   color: #fff;
   border: none;
-  padding: 14px;
+  padding: 12px 20px;
+  border-radius: 8px;
   font-size: 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  margin-top: 5px;
+  font-weight: bold;
+}
+.btn-generar:disabled {
+  background: #444;
+  color: #777;
 }
 
-button:hover {
-  background: #005a9e;
+/* Modal Detalle */
+.modal {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.9);
+  z-index: 2000;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow-y: auto;
+  padding: 20px;
+  box-sizing: border-box;
 }
-
-.btn-secundario {
-  background: #d9534f;
-  margin-top: 15px;
+.modal.oculto {
+  display: none;
+}
+.modal-content {
+  background: #1e1e1e;
   width: 100%;
-}
-
-.configuracion {
+  max-width: 500px;
+  border-radius: 12px;
+  border: 1px solid #444;
+  padding: 20px;
   margin-top: 20px;
-  padding-top: 15px;
-  border-top: 1px dashed #444;
 }
-
-/* Lista y Totales */
-#lista-reparaciones {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 15px 0;
-}
-
-#lista-reparaciones li {
-  background: #2a2a2a;
-  margin-bottom: 8px;
-  padding: 10px;
-  border-radius: 6px;
+.modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 15px;
+}
+.modal-header h2 { margin: 0; font-size: 1.5rem; }
+.btn-cerrar {
+  background: transparent; border: none; color: #fff; font-size: 1.5rem; cursor: pointer;
 }
 
-.btn-eliminar-item {
-  background: transparent;
-  color: #d9534f;
-  border: 1px solid #d9534f;
-  padding: 4px 8px;
-  font-size: 12px;
-  width: auto;
-  margin: 0;
+.lista-detallada { list-style: none; padding: 0; margin: 0; }
+.lista-detallada li {
+  display: flex; justify-content: space-between; margin-bottom: 10px;
+  border-bottom: 1px dashed #333; padding-bottom: 10px;
 }
 
-.totales p {
-  display: flex;
-  justify-content: space-between;
-  margin: 5px 0;
-  font-size: 15px;
-}
+.resumen-calculos p { margin: 5px 0; display: flex; justify-content: space-between; font-size: 16px;}
+.resumen-calculos h3 { margin: 10px 0 0 0; display: flex; justify-content: space-between; font-size: 1.8rem; color: #28a745;}
+.texto-descuento { color: #f0ad4e; }
 
-.totales hr {
-  border-color: #333;
-  margin: 15px 0;
-}
-
-.totales h3 {
-  display: flex;
-  justify-content: space-between;
-  margin: 0;
-  color: #28a745;
-  font-size: 1.5rem;
-}
-
-.descuento {
-  color: #f0ad4e;
-}
-
-.comision {
-  color: #17a2b8;
+.btn-whatsapp {
+  width: 100%;
+  background: #25D366;
+  color: #fff;
+  border: none;
+  padding: 15px;
+  font-size: 1.2rem;
+  border-radius: 8px;
+  margin-top: 20px;
   font-weight: bold;
-  margin-top: 10px !important;
 }
 
-/* PC View */
-@media (min-width: 768px) {
-  .container {
-    flex-direction: row;
-    align-items: flex-start;
-  }
-  .panel-agregar {
-    flex: 1;
-  }
-  .panel-resumen {
-    flex: 1;
-    position: sticky;
-    top: 20px;
-  }
+/* Loader */
+.loader {
+  border: 6px solid #2a2a2a; border-top: 6px solid #0078d7; border-radius: 50%;
+  width: 40px; height: 40px; animation: spin 1s linear infinite;
+  margin: 50px auto;
 }
+@keyframes spin { 100% { transform: rotate(360deg); } }

@@ -2,57 +2,77 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Panel de Vendedor - Cotizador</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Panel de Ventas / Presupuestos</title>
   <link rel="stylesheet" href="style.css">
+  <script src="../config.js"></script>
 </head>
 <body>
-  <div class="header">
-    <h1>Panel Vendedor - Cotizador</h1>
-    <a href="../index.html" class="btn-volver">Volver al Listado</a>
-  </div>
+  <!-- Header Fijo -->
+  <header class="header">
+    <div class="header-top">
+      <h1>Nuevo Presupuesto</h1>
+      <a href="../index.html" class="btn-volver">Volver al Listado</a>
+    </div>
+    <div class="cliente-info">
+      <input type="text" id="nombre-cliente" placeholder="Nombre del Cliente (Opcional)">
+      <input type="tel" id="telefono-cliente" placeholder="Teléfono (Opcional)">
+    </div>
+    <div class="buscador-container">
+      <input type="text" id="buscador-reparaciones" placeholder="🔍 Buscar por marca, modelo o reparación...">
+    </div>
+  </header>
 
-  <div class="container">
-    <!-- Formulario para agregar reparaciones al presupuesto -->
-    <div class="panel-agregar">
-      <h2>Añadir Reparación</h2>
-      <form id="form-reparacion">
-        <label>Reparación:</label>
-        <input type="text" id="nombre-reparacion" placeholder="Ej: Cambio de pantalla" required>
-        
-        <label>Costo del Repuesto ($):</label>
-        <input type="number" id="costo-repuesto" placeholder="0" required min="0">
-        
-        <label>Mano de Obra ($):</label>
-        <input type="number" id="costo-mano-obra" placeholder="0" required min="0">
-        
-        <button type="submit">Agregar al Carrito</button>
-      </form>
-      
-      <div class="configuracion">
-        <label>Comisión Vendedor (%):</label>
-        <input type="number" id="comision-porcentaje" value="10" min="0" max="100">
+  <!-- Catálogo de Reparaciones en el Medio -->
+  <main class="catalogo-container">
+    <div id="loader" class="loader"></div>
+    <div id="lista-catalogo" class="grid-catalogo">
+      <!-- Las tarjetas se cargarán aquí dinámicamente -->
+    </div>
+  </main>
+
+  <!-- Tarjeta Inferior de Totales (Sticky Bottom) -->
+  <footer class="footer-totales">
+    <div class="resumen-rapido">
+      <div class="info-items">
+        <span id="cant-items">0 items</span> seleccionados
+      </div>
+      <div class="descuento-info">
+        Desc. <span id="porc-desc">0</span>%
       </div>
     </div>
+    
+    <div class="total-precio">
+      <span>Total:</span>
+      <span id="total-final">$0</span>
+    </div>
 
-    <!-- Resumen y Carrito -->
-    <div class="panel-resumen">
-      <h2>Presupuesto Actual</h2>
-      <ul id="lista-reparaciones">
-        <!-- Las reparaciones se agregarán aquí -->
-      </ul>
+    <button id="btn-generar" class="btn-generar" disabled>Revisar Presupuesto</button>
+  </footer>
 
-      <div class="totales">
-        <p>Cantidad de reparaciones: <span id="cant-reparaciones">0</span></p>
-        <p>Subtotal Repuestos: $<span id="sub-repuestos">0.00</span></p>
-        <p>Subtotal Mano de Obra: $<span id="sub-mano-obra">0.00</span></p>
-        <p class="descuento">Descuento aplicado (<span id="porcentaje-descuento">0</span>%): -$<span id="monto-descuento">0.00</span></p>
-        <hr>
-        <h3>Total Cliente: $<span id="total-cliente">0.00</span></h3>
-        <p class="comision">Tu Comisión: $<span id="total-comision">0.00</span></p>
+  <!-- Modal / Pantalla de Detalles del Presupuesto (Oculto inicialmente) -->
+  <div id="modal-presupuesto" class="modal oculto">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Detalle del Presupuesto</h2>
+        <button id="btn-cerrar-modal" class="btn-cerrar">X</button>
       </div>
-      
-      <button id="btn-limpiar" class="btn-secundario">Limpiar Presupuesto</button>
+      <div class="modal-body">
+        <p><strong>Cliente:</strong> <span id="resumen-cliente">-</span></p>
+        <hr>
+        <ul id="resumen-lista-items" class="lista-detallada">
+          <!-- Items seleccionados -->
+        </ul>
+        <hr>
+        <div class="resumen-calculos">
+          <p>Subtotal Bruto: $<span id="resumen-subtotal">0</span></p>
+          <p class="texto-descuento">Descuento (<span id="resumen-porc-desc">0</span>%): -$<span id="resumen-monto-desc">0</span></p>
+          <h3>Total Final: $<span id="resumen-total">0</span></h3>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-enviar-whatsapp" class="btn-whatsapp">📲 Enviar por WhatsApp</button>
+      </div>
     </div>
   </div>
 
