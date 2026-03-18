@@ -35,9 +35,18 @@ button {
 button:hover {
   background: #005a9e;
 }
+#buscador {
+  width: 100%;
+  padding: 10px;
+  margin: 15px 0;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background: #1e1e1e;
+  color: #fff;
+}
 #tarjetas {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 15px;
 }
 .card {
@@ -69,4 +78,22 @@ button:hover {
 }
 .acciones button.editar {
   background: #f0ad4e;
+}
+
+/* Versión móvil */
+@media (max-width: 600px) {
+  body {
+    margin: 10px;
+    font-size: 16px;
+  }
+  #tarjetas {
+    grid-template-columns: 1fr;
+  }
+  .card {
+    padding: 20px;
+  }
+  button {
+    width: 100%;
+    margin-top: 8px;
+  }
 }
