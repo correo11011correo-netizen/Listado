@@ -83,7 +83,7 @@ button:hover {
   background: #f0ad4e;
 }
 
-/* Loader circular */
+/* Loader circular sin texto */
 .loader {
   border: 6px solid #2a2a2a;
   border-top: 6px solid #0078d7;
@@ -112,7 +112,7 @@ button:hover {
 @media (max-width: 600px) {
   body {
     margin: 10px;
-    font-size: 18px; /* texto más grande */
+    font-size: 18px;
   }
 
   form {
@@ -144,7 +144,7 @@ button:hover {
   }
 
   #tarjetas {
-    grid-template-columns: 1fr; /* una sola columna */
+    grid-template-columns: 1fr;
   }
   .card {
     padding: 20px;
