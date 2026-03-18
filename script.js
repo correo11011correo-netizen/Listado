@@ -185,3 +185,14 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   cargarListado();
 });
+
+// Botón para alternar a Versión PC/Móvil
+document.getElementById("btn-toggle-view").addEventListener("click", (e) => {
+  document.body.classList.toggle("pc-view");
+  if (document.body.classList.contains("pc-view")) {
+    e.target.textContent = "Versión Móvil";
+  } else {
+    e.target.textContent = "Versión PC";
+  }
+});
+
