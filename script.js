@@ -3,8 +3,8 @@ let editIndex = null;
 
 function handleCredentialResponse(response) {
   idToken = response.credential;
-  localStorage.setItem("idToken", idToken); // guardar token
-  document.getElementById("formulario").style.display = "block";
+  localStorage.setItem("idToken", idToken);
+  document.getElementById("formulario").style.display = "block"; // mostrar formulario
   cargarListado();
 }
 
@@ -22,83 +22,98 @@ function formatFecha(fechaIso) {
 }
 
 async function cargarListado() {
-  const res = await fetch(CONFIG.SCRIPT_URL);
-  const json = await res.json();
-  const contenedor = document.querySelector("#tarjetas");
-  contenedor.innerHTML = "";
+  mostrarLoader("Cargando precios...");
+  try {
+    const res = await fetch(CONFIG.SCRIPT_URL);
+    const json = await res.json();
+    const contenedor = document.querySelector("#tarjetas");
+    contenedor.innerHTML = "";
 
-  if (json.contenido) {
-    const lineas = json.contenido.trim().split("\n");
-    const marcas = new Set();
-    const modelos = new Set();
+    if (json.contenido) {
+      const lineas = json.contenido.trim().split("\n");
+      const marcas = new Set();
+      const modelos = new Set();
 
-    lineas.forEach((linea, idx) => {
-      const partes = linea.split(" | ");
-      if (partes.length >= 6) {
-        const fecha = formatFecha(partes[0]);
-        const marca = partes[2];
-        const modelo = partes[3];
-        const reparacion = partes[4];
-        const precio = formatPrecio(partes[5]);
+      lineas.forEach((linea, idx) => {
+        const partes = linea.split(" | ");
+        if (partes.length >= 6) {
+          const fecha = formatFecha(partes[0]);
+          const marca = partes[2];
+          const modelo = partes[3];
+          const reparacion = partes[4];
+          const precio = formatPrecio(partes[5]);
 
-        marcas.add(marca);
-        modelos.add(modelo);
+          marcas.add(marca);
+          modelos.add(modelo);
 
-        const card = document.createElement("div");
-        card.className = "card fade-in";
-        card.innerHTML = `
-          <h3>${marca} ${modelo}</h3>
-          <p><strong>Reparación:</strong> ${reparacion}</p>
-          <p><strong>Precio:</strong> ${precio}</p>
-          <p><strong>Fecha:</strong> ${fecha}</p>
-          <div class="acciones">
-            <button class="editar">Editar</button>
-            <button class="eliminar">Eliminar</button>
-          </div>
-        `;
-        contenedor.appendChild(card);
+          const card = document.createElement("div");
+          card.className = "card fade-in";
+          card.innerHTML = `
+            <h3>${marca} ${modelo}</h3>
+            <p><strong>Reparación:</strong> ${reparacion}</p>
+            <p><strong>Precio:</strong> ${precio}</p>
+            <p><strong>Fecha:</strong> ${fecha}</p>
+          `;
 
-        card.querySelector(".editar").addEventListener("click", () => {
-          document.getElementById("nuevaMarca").value = marca;
-          document.getElementById("nuevoModelo").value = modelo;
-          document.getElementById("reparacion").value = reparacion;
-          document.getElementById("precio").value = partes[5];
-          editIndex = idx;
-        });
+          // Solo mostrar acciones si hay sesión iniciada
+          if (idToken) {
+            const acciones = document.createElement("div");
+            acciones.className = "acciones";
+            acciones.innerHTML = `
+              <button class="editar">Editar</button>
+              <button class="eliminar">Eliminar</button>
+            `;
+            card.appendChild(acciones);
 
-        card.querySelector(".eliminar").addEventListener("click", async () => {
-          if (!idToken) return alert("Inicia sesión primero");
-          mostrarLoader();
-          const data = { token: idToken, accion: "eliminar", linea: idx };
-          const res = await fetch(CONFIG.SCRIPT_URL, {
-            method: "POST",
-            body: JSON.stringify(data)
-          });
-          const json = await res.json();
-          ocultarLoader();
-          if (json.estado === "ok") cargarListado();
-          else alert("Error al eliminar: " + json.error);
-        });
-      }
-    });
+            acciones.querySelector(".editar").addEventListener("click", () => {
+              document.getElementById("nuevaMarca").value = marca;
+              document.getElementById("nuevoModelo").value = modelo;
+              document.getElementById("reparacion").value = reparacion;
+              document.getElementById("precio").value = partes[5];
+              editIndex = idx;
+            });
 
-    const marcaSelect = document.getElementById("marca");
-    marcaSelect.innerHTML = "";
-    marcas.forEach(m => {
-      const opt = document.createElement("option");
-      opt.value = m;
-      opt.textContent = m;
-      marcaSelect.appendChild(opt);
-    });
+            acciones.querySelector(".eliminar").addEventListener("click", async () => {
+              mostrarLoader("Eliminando...");
+              const data = { token: idToken, accion: "eliminar", linea: idx };
+              const res = await fetch(CONFIG.SCRIPT_URL, {
+                method: "POST",
+                body: JSON.stringify(data)
+              });
+              const json = await res.json();
+              ocultarLoader();
+              if (json.estado === "ok") cargarListado();
+              else alert("Error al eliminar: " + json.error);
+            });
+          }
 
-    const modeloSelect = document.getElementById("modelo");
-    modeloSelect.innerHTML = "";
-    modelos.forEach(m => {
-      const opt = document.createElement("option");
-      opt.value = m;
-      opt.textContent = m;
-      modeloSelect.appendChild(opt);
-    });
+          contenedor.appendChild(card);
+        }
+      });
+
+      // actualizar selects
+      const marcaSelect = document.getElementById("marca");
+      marcaSelect.innerHTML = "";
+      marcas.forEach(m => {
+        const opt = document.createElement("option");
+        opt.value = m;
+        opt.textContent = m;
+        marcaSelect.appendChild(opt);
+      });
+
+      const modeloSelect = document.getElementById("modelo");
+      modeloSelect.innerHTML = "";
+      modelos.forEach(m => {
+        const opt = document.createElement("option");
+        opt.value = m;
+        opt.textContent = m;
+        modeloSelect.appendChild(opt);
+      });
+    }
+  } catch (err) {
+    alert("Error cargando datos: " + err);
+  } finally {
+    ocultarLoader();
   }
 }
 
@@ -118,7 +133,7 @@ document.getElementById("formulario").addEventListener("submit", async (e) => {
     marca, modelo, reparacion, precio
   };
 
-  mostrarLoader();
+  mostrarLoader(editIndex !== null ? "Editando..." : "Agregando...");
   const res = await fetch(CONFIG.SCRIPT_URL, {
     method: "POST",
     body: JSON.stringify(data)
@@ -129,18 +144,27 @@ document.getElementById("formulario").addEventListener("submit", async (e) => {
   if (json.estado === "ok") {
     editIndex = null;
     cargarListado();
-    document.getElementById("formulario").reset(); // limpiar campos
+    document.getElementById("formulario").reset();
   } else {
     alert("Error: " + json.error);
   }
 });
 
-// Loader helpers
-function mostrarLoader() {
-  const loader = document.createElement("div");
-  loader.className = "loader";
-  loader.id = "loader";
-  document.body.appendChild(loader);
+// Loader helpers con texto
+function mostrarLoader(texto="Cargando...") {
+  let loader = document.getElementById("loader");
+  if (!loader) {
+    loader = document.createElement("div");
+    loader.id = "loader";
+    loader.className = "loader";
+    const span = document.createElement("span");
+    span.textContent = texto;
+    loader.appendChild(span);
+    document.body.appendChild(loader);
+  } else {
+    loader.querySelector("span").textContent = texto;
+    loader.style.display = "flex";
+  }
 }
 function ocultarLoader() {
   const loader = document.getElementById("loader");
