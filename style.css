@@ -13,7 +13,6 @@ form {
   padding: 15px;
   border-radius: 8px;
   margin-bottom: 20px;
-  display: none; /* oculto por defecto, se muestra con sesión */
 }
 label {
   display: inline-block;
