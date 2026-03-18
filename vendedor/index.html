@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Vendedor - Cotizador</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="header">
+    <h1>Panel Vendedor - Cotizador</h1>
+    <a href="../index.html" class="btn-volver">Volver al Listado</a>
+  </div>
+
+  <div class="container">
+    <!-- Formulario para agregar reparaciones al presupuesto -->
+    <div class="panel-agregar">
+      <h2>Añadir Reparación</h2>
+      <form id="form-reparacion">
+        <label>Reparación:</label>
+        <input type="text" id="nombre-reparacion" placeholder="Ej: Cambio de pantalla" required>
+        
+        <label>Costo del Repuesto ($):</label>
+        <input type="number" id="costo-repuesto" placeholder="0" required min="0">
+        
+        <label>Mano de Obra ($):</label>
+        <input type="number" id="costo-mano-obra" placeholder="0" required min="0">
+        
+        <button type="submit">Agregar al Carrito</button>
+      </form>
+      
+      <div class="configuracion">
+        <label>Comisión Vendedor (%):</label>
+        <input type="number" id="comision-porcentaje" value="10" min="0" max="100">
+      </div>
+    </div>
+
+    <!-- Resumen y Carrito -->
+    <div class="panel-resumen">
+      <h2>Presupuesto Actual</h2>
+      <ul id="lista-reparaciones">
+        <!-- Las reparaciones se agregarán aquí -->
+      </ul>
+
+      <div class="totales">
+        <p>Cantidad de reparaciones: <span id="cant-reparaciones">0</span></p>
+        <p>Subtotal Repuestos: $<span id="sub-repuestos">0.00</span></p>
+        <p>Subtotal Mano de Obra: $<span id="sub-mano-obra">0.00</span></p>
+        <p class="descuento">Descuento aplicado (<span id="porcentaje-descuento">0</span>%): -$<span id="monto-descuento">0.00</span></p>
+        <hr>
+        <h3>Total Cliente: $<span id="total-cliente">0.00</span></h3>
+        <p class="comision">Tu Comisión: $<span id="total-comision">0.00</span></p>
+      </div>
+      
+      <button id="btn-limpiar" class="btn-secundario">Limpiar Presupuesto</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
