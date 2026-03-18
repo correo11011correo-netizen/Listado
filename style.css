@@ -1,3 +1,4 @@
+/* Versión PC (default) */
 body {
   font-family: Arial, sans-serif;
   background: #121212;
@@ -108,20 +109,55 @@ button:hover {
   to { opacity: 1; }
 }
 
-/* Versión móvil */
+/* Versión móvil optimizada */
 @media (max-width: 600px) {
   body {
     margin: 10px;
+    font-size: 18px; /* texto más grande */
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  label {
+    width: auto;
+    margin-bottom: 4px;
     font-size: 16px;
   }
-  #tarjetas {
-    grid-template-columns: 1fr;
-  }
-  .card {
-    padding: 20px;
+  input, select {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
   }
   button {
     width: 100%;
-    margin-top: 8px;
+    padding: 14px;
+    font-size: 16px;
+    margin-top: 10px;
+  }
+
+  #buscador {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+  }
+
+  #tarjetas {
+    grid-template-columns: 1fr; /* una sola columna */
+  }
+  .card {
+    padding: 20px;
+    font-size: 16px;
+  }
+  .acciones {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .acciones button {
+    width: 100%;
+    font-size: 16px;
   }
 }
