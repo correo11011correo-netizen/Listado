@@ -3,7 +3,8 @@ let editIndex = null;
 
 function handleCredentialResponse(response) {
   idToken = response.credential;
-  document.getElementById("formulario").style.display = "block"; // mostrar editor
+  localStorage.setItem("idToken", idToken); // guardar token
+  document.getElementById("formulario").style.display = "block";
   cargarListado();
 }
 
@@ -67,12 +68,14 @@ async function cargarListado() {
 
         card.querySelector(".eliminar").addEventListener("click", async () => {
           if (!idToken) return alert("Inicia sesión primero");
+          mostrarLoader();
           const data = { token: idToken, accion: "eliminar", linea: idx };
           const res = await fetch(CONFIG.SCRIPT_URL, {
             method: "POST",
             body: JSON.stringify(data)
           });
           const json = await res.json();
+          ocultarLoader();
           if (json.estado === "ok") cargarListado();
           else alert("Error al eliminar: " + json.error);
         });
@@ -115,18 +118,34 @@ document.getElementById("formulario").addEventListener("submit", async (e) => {
     marca, modelo, reparacion, precio
   };
 
+  mostrarLoader();
   const res = await fetch(CONFIG.SCRIPT_URL, {
     method: "POST",
     body: JSON.stringify(data)
   });
   const json = await res.json();
+  ocultarLoader();
+
   if (json.estado === "ok") {
     editIndex = null;
     cargarListado();
+    document.getElementById("formulario").reset(); // limpiar campos
   } else {
     alert("Error: " + json.error);
   }
 });
+
+// Loader helpers
+function mostrarLoader() {
+  const loader = document.createElement("div");
+  loader.className = "loader";
+  loader.id = "loader";
+  document.body.appendChild(loader);
+}
+function ocultarLoader() {
+  const loader = document.getElementById("loader");
+  if (loader) loader.remove();
+}
 
 // Buscador dinámico
 document.getElementById("buscador").addEventListener("input", () => {
@@ -137,4 +156,12 @@ document.getElementById("buscador").addEventListener("input", () => {
   });
 });
 
-document.addEventListener("DOMContentLoaded", cargarListado);
+// Detectar sesión guardada
+document.addEventListener("DOMContentLoaded", () => {
+  const savedToken = localStorage.getItem("idToken");
+  if (savedToken) {
+    idToken = savedToken;
+    document.getElementById("formulario").style.display = "block";
+  }
+  cargarListado();
+});
